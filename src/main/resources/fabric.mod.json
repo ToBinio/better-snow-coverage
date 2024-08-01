@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "better-snow-coverage",
+	"version": "${version}",
+	"name": "Better Snow Coverage",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/better-snow-coverage/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"tobinio.bettersnowcoverage.BetterSnowCoverage"
+		],
+		"client": [
+			"tobinio.bettersnowcoverage.BetterSnowCoverageClient"
+		]
+	},
+	"mixins": [
+		"better-snow-coverage.mixins.json",
+		{
+			"config": "better-snow-coverage.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
