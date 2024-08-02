@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "SectionBuilderMixin",
-    "AbstractBlockAccessor",
-    "sodium.BlockRenderContextAccessor",
     "sodium.ChunkBuilderMeshingTaskMixin"
   ],
   "injectors": {

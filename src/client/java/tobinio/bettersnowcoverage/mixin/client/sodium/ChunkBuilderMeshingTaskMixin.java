@@ -8,8 +8,11 @@ import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRende
 import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderContext;
 import me.jellysquid.mods.sodium.client.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
 import me.jellysquid.mods.sodium.client.util.task.CancellationToken;
+import me.jellysquid.mods.sodium.client.world.WorldSlice;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -29,22 +32,19 @@ public class ChunkBuilderMeshingTaskMixin {
     @Inject (method = "execute(Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lme/jellysquid/mods/sodium/client/util/task/CancellationToken;)Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;renderModel(Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderContext;Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildBuffers;)V", remap = false), remap = false)
     private void execute(ChunkBuildContext buildContext, CancellationToken cancellationToken,
             CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderContext ctx,
-            @Local ChunkBuildBuffers buffers, @Local BlockRenderCache cache) {
+            @Local ChunkBuildBuffers buffers, @Local BlockRenderCache cache, @Local WorldSlice slice) {
         if (BetterSnowChecker.shouldHaveSnow(ctx.state(), ctx.pos(), ctx.world())) {
             Vector3fc origin = ctx.origin();
 
-            var newOrigen = new Vector3f(origin);
-            var baseOffset = ctx.state().getModelOffset(ctx.world(), ctx.pos());
-            newOrigen.sub((float) baseOffset.getX(), (float) baseOffset.getY(), (float) baseOffset.getZ());
+            BlockRenderContext context = new BlockRenderContext(slice);
 
-            var context = (BlockRenderContextAccessor) ctx;
+            BlockState snow = Blocks.SNOW.getDefaultState();
+            var model = cache.getBlockModels()
+                    .getModel(snow);
 
-            context.setState(Blocks.SNOW.getDefaultState());
-            context.setOrigin(newOrigen);
+            context.update(ctx.pos(), new BlockPos((int) origin.x(), (int) origin.y(), (int) origin.z()), snow, model, ctx.seed());
 
-            cache.getBlockRenderer().renderModel((BlockRenderContext) context, buffers);
-
-            context.setOrigin((Vector3f) origin);
+            cache.getBlockRenderer().renderModel(context, buffers);
         }
     }
 }

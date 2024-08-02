@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"tobinio.bettersnowcoverage.BetterSnowCoverageClient"
+		],
+		"modmenu": [
+			"tobinio.bettersnowcoverage.config.ConfigMenu"
 		]
 	},
 	"mixins": [
@@ -30,10 +33,12 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.15.11",
+		"fabricloader": ">=${loader_version}",
 		"minecraft": "~1.21",
 		"java": ">=21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+        "yet_another_config_lib_v3": "${yacl_version}",
+		"modmenu": "${modmenu_version}"
 	},
 	"suggests": {
 		"another-mod": "*"
