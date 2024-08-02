@@ -1,11 +1,14 @@
 {
-	"required": true,
-	"package": "tobinio.bettersnowcoverage.mixin.client",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"ExampleClientMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "tobinio.bettersnowcoverage.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "SectionBuilderMixin",
+    "AbstractBlockAccessor",
+    "sodium.BlockRenderContextAccessor",
+    "sodium.ChunkBuilderMeshingTaskMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
