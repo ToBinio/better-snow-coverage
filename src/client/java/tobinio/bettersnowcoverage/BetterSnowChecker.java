@@ -2,13 +2,13 @@ package tobinio.bettersnowcoverage;
 
 import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.Heightmap;
 import tobinio.bettersnowcoverage.config.Config;
 
 /**
@@ -29,17 +29,17 @@ public class BetterSnowChecker {
         NONE, WITH_LAYER, WITHOUT_LAYER,
     }
 
-    public static SnowState shouldHaveSnow(BlockPos pos, BlockRenderView world) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+    public static SnowState shouldHaveSnow(BlockPos pos) {
+        ClientWorld world = MinecraftClient.getInstance().world;
 
-        if (player == null) {
+        if (world == null) {
             BetterSnowCoverage.LOGGER.warn("no player found");
             return SnowState.NONE;
         }
 
         var state = world.getBlockState(pos);
 
-        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.getBlock() == Blocks.AIR) {
+        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.isIn(BlockTags.AIR)) {
             return SnowState.NONE;
         }
 
@@ -74,14 +74,37 @@ public class BetterSnowChecker {
         return false;
     }
 
-    private static boolean hasSnowNeighbor(BlockPos pos, BlockRenderView world) {
+    private static boolean hasSnowNeighbor(BlockPos pos, ClientWorld world) {
         var directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
         for (Direction direction : directions) {
-            BlockState neighbor = world.getBlockState(pos.add(direction.getOffsetX(), 0, direction.getOffsetZ()));
+            if (!hasSnowInDirection(pos, world, direction)) {
+                return false;
+            }
+        }
 
-            if (neighbor.isIn(BlockTags.SNOW)) {
+        return true;
+    }
+
+    private static boolean hasSnowInDirection(BlockPos pos, ClientWorld world, Direction direction) {
+        var maxDepth = 8;
+
+        while (maxDepth-- > 0) {
+            pos = pos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
+            pos = new BlockPos(pos.getX(), world.getTopY(Heightmap.Type.MOTION_BLOCKING, pos.getX(), pos.getZ()) - 1, pos.getZ());
+
+            var maxDepth2 = 8;
+
+            while (!world.getBlockState(pos).isFullCube(world, pos) && maxDepth2-- > 0) {
+                pos = pos.down();
+            }
+
+            if (world.getBlockState(pos.up()).isIn(BlockTags.SNOW)) {
                 return true;
+            }
+
+            if (world.getBlockState(pos.up()).isIn(BlockTags.AIR)) {
+                return false;
             }
         }
 
