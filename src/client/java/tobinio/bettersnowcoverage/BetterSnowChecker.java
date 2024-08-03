@@ -77,8 +77,14 @@ public class BetterSnowChecker {
     private static boolean hasSnowNeighbor(BlockPos pos, ClientWorld world) {
         var directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
+        var noSnowCount = 0;
+
         for (Direction direction : directions) {
             if (!hasSnowInDirection(pos, world, direction)) {
+                noSnowCount++;
+            }
+
+            if (noSnowCount >= 2) {
                 return false;
             }
         }
