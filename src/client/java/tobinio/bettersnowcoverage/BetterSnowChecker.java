@@ -1,18 +1,15 @@
 package tobinio.bettersnowcoverage;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 import tobinio.bettersnowcoverage.config.Config;
-
-import java.util.logging.Logger;
 
 /**
  * Created: 02.08.24
@@ -20,27 +17,45 @@ import java.util.logging.Logger;
  * @author Tobias Frischmann
  */
 public class BetterSnowChecker {
-    public static boolean shouldHaveSnow(BlockState state, BlockPos pos, BlockRenderView world) {
+
+    public static BlockState getSnowState(BlockState state) {
+        if (state.getBlock() instanceof SnowyBlock) {
+            return state.with(Properties.SNOWY, true);
+        }
+        return state;
+    }
+
+    public enum SnowState {
+        NONE, WITH_LAYER, WITHOUT_LAYER,
+    }
+
+    public static SnowState shouldHaveSnow(BlockPos pos, BlockRenderView world) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
         if (player == null) {
             BetterSnowCoverage.LOGGER.warn("no player found");
-            return false;
+            return SnowState.NONE;
         }
 
-        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN)) {
-            return false;
+        var state = world.getBlockState(pos);
+
+        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.getBlock() == Blocks.AIR) {
+            return SnowState.NONE;
         }
 
         if (!world.getBlockState(pos.down()).isFullCube(world, pos.down())) {
-            return false;
+            return SnowState.NONE;
         }
 
-        if (isExcludedBlock(state)) {
-            return false;
+        if (hasSnowNeighbor(pos, world)) {
+            if (isExcludedBlock(state)) {
+                return SnowState.WITHOUT_LAYER;
+            }
+
+            return SnowState.WITH_LAYER;
         }
 
-        return hasSnowNeighbor(pos, world);
+        return SnowState.NONE;
     }
 
     private static boolean isExcludedBlock(BlockState state) {
