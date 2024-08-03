@@ -3,15 +3,17 @@
 	"id": "better-snow-coverage",
 	"version": "${version}",
 	"name": "Better Snow Coverage",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "renders missing snow under various blocks",
 	"authors": [
-		"Me!"
+        "ToBinio"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"repo": "https://github.com/toBinio/better-snow-coverage",
+		"homepage": "https://github.com/toBinio/better-snow-coverage",
+		"issues": "https://github.com/toBinio/better-snow-coverage/issues",
+		"sources": "https://github.com/toBinio/better-snow-coverage"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/better-snow-coverage/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -39,8 +41,5 @@
 		"fabric-api": "*",
         "yet_another_config_lib_v3": "${yacl_version}",
 		"modmenu": "${modmenu_version}"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
