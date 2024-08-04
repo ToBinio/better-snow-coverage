@@ -1,4 +1,4 @@
-package tobinio.bettersnowcoverage.mixin.client.sodium;
+package tobinio.bettersnowcoverage.mixin.sodium;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildBuffers;
@@ -12,7 +12,6 @@ import me.jellysquid.mods.sodium.client.world.WorldSlice;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import org.joml.Vector3fc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

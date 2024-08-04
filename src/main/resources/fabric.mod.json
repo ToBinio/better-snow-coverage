@@ -15,24 +15,17 @@
 	},
 	"license": "MIT",
 	"icon": "assets/better-snow-coverage/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
-		"main": [
-			"tobinio.bettersnowcoverage.BetterSnowCoverage"
-		],
 		"client": [
-			"tobinio.bettersnowcoverage.BetterSnowCoverageClient"
+			"tobinio.bettersnowcoverage.BetterSnowCoverage"
 		],
 		"modmenu": [
 			"tobinio.bettersnowcoverage.config.ConfigMenu"
 		]
 	},
 	"mixins": [
-		"better-snow-coverage.mixins.json",
-		{
-			"config": "better-snow-coverage.client.mixins.json",
-			"environment": "client"
-		}
+		"better-snow-coverage.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=${loader_version}",

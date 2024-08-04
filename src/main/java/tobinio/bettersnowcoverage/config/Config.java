@@ -14,7 +14,9 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static tobinio.bettersnowcoverage.BetterSnowCoverage.*;
+import static com.mojang.text2speech.Narrator.LOGGER;
+import static tobinio.bettersnowcoverage.BetterSnowCoverage.MOD_ID;
+import static tobinio.bettersnowcoverage.BetterSnowCoverage.id;
 
 /**
  * Created: 02.08.24
