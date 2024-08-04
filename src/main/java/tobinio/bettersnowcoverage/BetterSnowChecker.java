@@ -8,7 +8,6 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.Heightmap;
 import tobinio.bettersnowcoverage.config.Config;
 
 /**
@@ -39,7 +38,7 @@ public class BetterSnowChecker {
 
         var state = world.getBlockState(pos);
 
-        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.isIn(BlockTags.AIR)) {
+        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.isIn(BlockTags.AIR) || state.getBlock() == Blocks.WATER) {
             return SnowState.NONE;
         }
 
@@ -91,12 +90,22 @@ public class BetterSnowChecker {
 
         while (maxDepth-- > 0) {
             pos = pos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
-            pos = new BlockPos(pos.getX(), world.getTopY(Heightmap.Type.MOTION_BLOCKING, pos.getX(), pos.getZ()) - 1, pos.getZ());
 
-            var maxDepth2 = 8;
+            var maxDepth2 = 4;
+            while (!world.getBlockState(pos).isFullCube(world, pos)) {
+                if (maxDepth2-- <= 0) {
+                    return false;
+                }
 
-            while (!world.getBlockState(pos).isFullCube(world, pos) && maxDepth2-- > 0) {
                 pos = pos.down();
+            }
+
+            while (world.getBlockState(pos.up()).isFullCube(world, pos.up())) {
+                if (maxDepth2-- <= 0) {
+                    return false;
+                }
+
+                pos = pos.up();
             }
 
             if (world.getBlockState(pos.up()).isIn(BlockTags.SNOW)) {
