@@ -10,6 +10,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import tobinio.bettersnowcoverage.config.Config;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 /**
  * Created: 02.08.24
  *
@@ -74,49 +77,87 @@ public class BetterSnowChecker {
     }
 
     private static boolean hasSnowNeighbor(BlockPos pos, ClientWorld world) {
-        var directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+        var directionCheckers = new ArrayList<DirectionChecker>();
+        directionCheckers.add(new DirectionChecker(Direction.NORTH, pos));
+        directionCheckers.add(new DirectionChecker(Direction.EAST, pos));
+        directionCheckers.add(new DirectionChecker(Direction.SOUTH, pos));
+        directionCheckers.add(new DirectionChecker(Direction.WEST, pos));
 
-        for (Direction direction : directions) {
-            if (hasSnowInDirection(pos, world, direction)) {
-                return true;
+        var maxDepth = 8;
+        for (int j = 0; j < maxDepth; j++) {
+
+            var results = new ArrayList<Optional<DirectionChecker.Result>>();
+
+            for (DirectionChecker directionChecker : directionCheckers) {
+                Optional<DirectionChecker.Result> result = directionChecker.next(world);
+                results.add(result);
+            }
+
+            var snowCount = 0;
+            var noneCount = 0;
+
+            for (int i = results.size() - 1; i >= 0; i--) {
+                var result = results.get(i);
+
+                if (result.isEmpty()) continue;
+
+                switch (result.get()) {
+                    case NONE -> noneCount++;
+                    case SNOW -> snowCount++;
+                    case UNDEFINED -> directionCheckers.remove(i);
+                }
+            }
+
+            if (snowCount != 0 || noneCount != 0) {
+                return snowCount >= noneCount;
             }
         }
 
         return false;
     }
 
-    private static boolean hasSnowInDirection(BlockPos pos, ClientWorld world, Direction direction) {
-        var maxDepth = 8;
+    static class DirectionChecker {
+        private final Direction direction;
+        private BlockPos lastPos;
 
-        while (maxDepth-- > 0) {
-            pos = pos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
-
-            var maxDepth2 = 4;
-            while (!world.getBlockState(pos).isFullCube(world, pos)) {
-                if (maxDepth2-- <= 0) {
-                    return false;
-                }
-
-                pos = pos.down();
-            }
-
-            while (world.getBlockState(pos.up()).isFullCube(world, pos.up())) {
-                if (maxDepth2-- <= 0) {
-                    return false;
-                }
-
-                pos = pos.up();
-            }
-
-            if (world.getBlockState(pos.up()).isIn(BlockTags.SNOW)) {
-                return true;
-            }
-
-            if (world.getBlockState(pos.up()).isIn(BlockTags.AIR)) {
-                return false;
-            }
+        public DirectionChecker(Direction direction, BlockPos pos) {
+            this.direction = direction;
+            this.lastPos = pos;
         }
 
-        return false;
+        public Optional<Result> next(ClientWorld world) {
+            lastPos = lastPos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
+
+            var maxDepth = 2;
+            while (!world.getBlockState(lastPos).isFullCube(world, lastPos)) {
+                if (maxDepth-- < 0) {
+                    return Optional.of(Result.UNDEFINED);
+                }
+
+                lastPos = lastPos.down();
+            }
+
+            while (world.getBlockState(lastPos.up()).isFullCube(world, lastPos.up())) {
+                if (maxDepth-- < 0) {
+                    return Optional.of(Result.UNDEFINED);
+                }
+
+                lastPos = lastPos.up();
+            }
+
+            if (world.getBlockState(lastPos.up()).isIn(BlockTags.SNOW)) {
+                return Optional.of(Result.SNOW);
+            }
+
+            if (world.getBlockState(lastPos.up()).isIn(BlockTags.AIR)) {
+                return Optional.of(Result.NONE);
+            }
+
+            return Optional.empty();
+        }
+
+        enum Result {
+            NONE, SNOW, UNDEFINED
+        }
     }
 }
