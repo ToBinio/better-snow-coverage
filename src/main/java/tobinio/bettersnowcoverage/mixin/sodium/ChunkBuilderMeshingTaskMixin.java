@@ -1,14 +1,13 @@
 package tobinio.bettersnowcoverage.mixin.sodium;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildBuffers;
-import me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildContext;
-import me.jellysquid.mods.sodium.client.render.chunk.compile.ChunkBuildOutput;
-import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderCache;
-import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderContext;
-import me.jellysquid.mods.sodium.client.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
-import me.jellysquid.mods.sodium.client.util.task.CancellationToken;
-import me.jellysquid.mods.sodium.client.world.WorldSlice;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.ChunkBuildContext;
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.ChunkBuildOutput;
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderCache;
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
+import net.caffeinemc.mods.sodium.client.util.task.CancellationToken;
+import net.caffeinemc.mods.sodium.client.world.LevelSlice;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -25,27 +24,23 @@ import tobinio.bettersnowcoverage.BetterSnowChecker;
  */
 @Mixin (value = ChunkBuilderMeshingTask.class, priority = 990)
 public class ChunkBuilderMeshingTaskMixin {
-    @Inject (method = "execute(Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lme/jellysquid/mods/sodium/client/util/task/CancellationToken;)Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;renderModel(Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderContext;Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildBuffers;)V", remap = false), remap = false)
+    @Inject (method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lnet/caffeinemc/mods/sodium/client/util/task/CancellationToken;)Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderCache;getBlockModels()Lnet/minecraft/client/render/block/BlockModels;", remap = false), remap = false)
     private void execute(ChunkBuildContext buildContext, CancellationToken cancellationToken,
-            CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderContext ctx,
-            @Local ChunkBuildBuffers buffers, @Local BlockRenderCache cache, @Local WorldSlice slice,
-            @Local (ordinal = 1) BlockPos.Mutable modelOffset) {
-        BetterSnowChecker.SnowState snowState = BetterSnowChecker.shouldHaveSnow(ctx.pos().up());
+            CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderCache cache, @Local LevelSlice slice,
+            @Local (ordinal = 0) BlockPos.Mutable pos, @Local (ordinal = 1) BlockPos.Mutable modelOffset,
+            @Local LocalRef<BlockState> blockState) {
+        BetterSnowChecker.SnowState snowState = BetterSnowChecker.shouldHaveSnow(pos.up());
+
 
         if (snowState != BetterSnowChecker.SnowState.NONE) {
-            var newState = BetterSnowChecker.getSnowState(ctx.state());
-            ctx.update(ctx.pos(), modelOffset, newState, cache.getBlockModels().getModel(newState), ctx.seed());
+            blockState.set(BetterSnowChecker.getSnowState(blockState.get()));
         }
 
         if (snowState == BetterSnowChecker.SnowState.WITH_LAYER) {
-            BlockRenderContext context = new BlockRenderContext(slice);
-
             BlockState snow = Blocks.SNOW.getDefaultState();
             var model = cache.getBlockModels().getModel(snow);
 
-            context.update(ctx.pos().up(), modelOffset.up(), snow, model, ctx.seed());
-
-            cache.getBlockRenderer().renderModel(context, buffers);
+            cache.getBlockRenderer().renderModel(model, snow, pos.up(), modelOffset.up());
         }
     }
 }
