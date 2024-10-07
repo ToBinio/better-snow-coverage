@@ -41,7 +41,7 @@ public class BetterSnowChecker {
 
         var state = world.getBlockState(pos);
 
-        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.isIn(BlockTags.AIR) || state.getBlock() == Blocks.WATER) {
+        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.isAir() || state.getBlock() == Blocks.WATER) {
             return SnowState.NONE;
         }
 
@@ -149,7 +149,7 @@ public class BetterSnowChecker {
                 return Optional.of(Result.SNOW);
             }
 
-            if (world.getBlockState(lastPos.up()).isIn(BlockTags.AIR)) {
+            if (world.getBlockState(lastPos.up()).isAir()) {
                 return Optional.of(Result.NONE);
             }
 

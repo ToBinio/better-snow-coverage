@@ -27,10 +27,11 @@
 	"mixins": [
 		"better-snow-coverage.mixins.json"
 	],
+	"accessWidener": "better-snow-coverag.accesswidener",
 	"depends": {
 		"fabricloader": ">=${loader_version}",
-		"minecraft": "~1.21",
-		"java": ">=21",
+		"minecraft": "1.20.1",
+		"java": ">=17",
 		"fabric-api": "*",
         "yet_another_config_lib_v3": "*",
 		"modmenu": "*"
