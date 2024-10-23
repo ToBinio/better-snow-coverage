@@ -3,7 +3,7 @@
 	"package": "tobinio.bettersnowcoverage.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"SectionBuilderMixin",
+		"ChunkBuilderMixin",
 		"sodium.ChunkBuilderMeshingTaskMixin"
 	],
 	"injectors": {

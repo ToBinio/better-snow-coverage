@@ -27,7 +27,7 @@
 	"mixins": [
 		"better-snow-coverage.mixins.json"
 	],
-	"accessWidener": "better-snow-coverag.accesswidener",
+	"accessWidener": "better-snow-coverage.accesswidener",
 	"depends": {
 		"fabricloader": ">=${loader_version}",
 		"minecraft": "1.20.1",
