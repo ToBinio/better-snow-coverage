@@ -31,7 +31,7 @@ repositories {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/better-snow-coverag.accesswidener")
+    accessWidenerPath = file("src/main/resources/better-snow-coverage.accesswidener")
 }
 
 dependencies {
@@ -42,7 +42,28 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+
+
+
+    modImplementation ("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
+        // Exclude snapshot libs
+        exclude group: "com.twelvemonkeys.imageio", module: "imageio-core"
+        exclude group: "com.twelvemonkeys.imageio", module: "imageio-webp"
+        exclude group: "com.twelvemonkeys.imageio", module: "imageio-metadata"
+        exclude group: "com.twelvemonkeys.common", module: "common-lang"
+        exclude group: "com.twelvemonkeys.common", module: "common-io"
+        exclude group: "com.twelvemonkeys.common", module: "common-image"
+    }
+
+    //Added stable releases (e.g. 3.10.x) for the Twelvemonkeys libs:
+    implementation("com.twelvemonkeys.imageio:imageio-core:3.10.0")
+    implementation("com.twelvemonkeys.imageio:imageio-webp:3.10.0")
+    implementation("com.twelvemonkeys.imageio:imageio-metadata:3.10.0")
+    implementation("com.twelvemonkeys.common:common-lang:3.10.0")
+    implementation("com.twelvemonkeys.common:common-io:3.10.0")
+    implementation("com.twelvemonkeys.common:common-image:3.10.0")
+
+
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
     modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
