@@ -26,7 +26,7 @@ import tobinio.bettersnowcoverage.BetterSnowChecker;
 @Mixin (value = ChunkBuilderMeshingTask.class, priority = 1020)
 public class ChunkBuilderMeshingTaskMixin {
     @Inject (method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lnet/caffeinemc/mods/sodium/client/util/task/CancellationToken;)Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderCache;getBlockModels()Lnet/minecraft/client/render/block/BlockModels;"))
-    private void execute(ChunkBuildContext buildContext, CancellationToken cancellationToken,
+    private void betterSnowCoverage$execute(ChunkBuildContext buildContext, CancellationToken cancellationToken,
             CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderCache cache, @Local LevelSlice slice,
             @Local (ordinal = 0) BlockPos.Mutable pos, @Local (ordinal = 1) BlockPos.Mutable modelOffset,
             @Local LocalRef<BlockState> blockState) {
