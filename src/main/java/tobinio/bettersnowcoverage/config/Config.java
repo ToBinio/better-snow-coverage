@@ -67,7 +67,7 @@ public class Config {
                 continue;
             }
 
-            var block = Registries.BLOCK.getOptionalValue(identifier);
+            var block = Registries.BLOCK.getOrEmpty(identifier);
 
             if (block.isPresent()) {
                 blocks.add(block.get());
