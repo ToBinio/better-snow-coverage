@@ -139,7 +139,7 @@ public class BetterSnowChecker {
 
             var maxDepth = config.maxVerticalDistance;
             while (!world.getBlockState(lastPos).isFullCube(world, lastPos)) {
-                if (maxDepth-- < 0) {
+                if (maxDepth-- <= 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
 
@@ -147,7 +147,7 @@ public class BetterSnowChecker {
             }
 
             while (world.getBlockState(lastPos.up()).isFullCube(world, lastPos.up())) {
-                if (maxDepth-- < 0) {
+                if (maxDepth-- <= 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
 
