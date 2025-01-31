@@ -92,20 +92,14 @@ public class Config {
     @SerialEntry
     public List<String> excludedTags = new ArrayList<>(DEFAULT_EXCLUDED_TAGS);
 
-    public static int DEFAULT_MAX_VERTICAL_DISTANCE = 2;
+    @SerialEntry
+    public Integer maxVerticalDistance = 2;
 
     @SerialEntry
-    public Integer maxVerticalDistance = DEFAULT_MAX_VERTICAL_DISTANCE;
-
-    public static int DEFAULT_MAX_HORIZONTAL_DISTANCE = 8;
+    public Integer maxHorizontalDistance = 8;
 
     @SerialEntry
-    public Integer maxHorizontalDistance = DEFAULT_MAX_HORIZONTAL_DISTANCE;
-
-    public static CheckerMode DEFAULT_CHECKER_MODE = CheckerMode.PREFER_SNOW;
-
-    @SerialEntry
-    public CheckerMode checkerMode = DEFAULT_CHECKER_MODE;
+    public CheckerMode checkerMode = CheckerMode.PREFER_SNOW;
 
     public enum CheckerMode implements NameableEnum {
         PREFER_SNOW,
