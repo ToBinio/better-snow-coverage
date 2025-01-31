@@ -37,7 +37,7 @@ public class BetterSnowCoverage implements ClientModInitializer {
         ResourceManagerHelperImpl.registerBuiltinResourcePack(id("z-fighting"),
                 "z-fighting",
                 container,
-                Text.translatable("pack.z-fighting.title"),
+                Text.translatable(MOD_ID + "pack.z-fighting.title"),
                 ResourcePackActivationType.DEFAULT_ENABLED);
     }
 }

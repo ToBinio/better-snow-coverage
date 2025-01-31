@@ -1,4 +1,7 @@
 {
-  "pack.z-fighting.title": "Z-Fighting",
-  "pack.z-fighting.description": "Fixes Snow Z-Fighting"
+  "better-snow-coverage.pack.z-fighting.title": "Z-Fighting",
+  "better-snow-coverage.pack.z-fighting.description": "Fixes Snow Z-Fighting",
+  "better-snow-coverage.mode.prefer_snow": "Prefer Snow",
+  "better-snow-coverage.mode.prefer_air": "Prefer Air",
+  "better-snow-coverage.mode.all_sides": "All Sides"
 }

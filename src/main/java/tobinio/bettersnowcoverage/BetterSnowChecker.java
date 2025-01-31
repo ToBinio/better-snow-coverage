@@ -41,7 +41,9 @@ public class BetterSnowChecker {
 
         var state = world.getBlockState(pos);
 
-        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.isIn(BlockTags.AIR) || state.getBlock() == Blocks.WATER) {
+        if (state.isSideSolidFullSquare(world,
+                pos,
+                Direction.DOWN) || state.isIn(BlockTags.AIR) || state.getBlock() == Blocks.WATER) {
             return SnowState.NONE;
         }
 
@@ -78,38 +80,45 @@ public class BetterSnowChecker {
 
     private static boolean hasSnowNeighbor(BlockPos pos, ClientWorld world) {
         var directionCheckers = new ArrayList<DirectionChecker>();
-        directionCheckers.add(new DirectionChecker(Direction.NORTH, pos));
-        directionCheckers.add(new DirectionChecker(Direction.EAST, pos));
-        directionCheckers.add(new DirectionChecker(Direction.SOUTH, pos));
-        directionCheckers.add(new DirectionChecker(Direction.WEST, pos));
+        directionCheckers.add(new DirectionChecker(Direction.NORTH, pos.down()));
+        directionCheckers.add(new DirectionChecker(Direction.EAST, pos.down()));
+        directionCheckers.add(new DirectionChecker(Direction.SOUTH, pos.down()));
+        directionCheckers.add(new DirectionChecker(Direction.WEST, pos.down()));
 
-        var maxDepth = 8;
-        for (int j = 0; j < maxDepth; j++) {
+        Config config = Config.HANDLER.instance();
 
-            var results = new ArrayList<Optional<DirectionChecker.Result>>();
+        var snowCount = 0;
+        var noneCount = 0;
 
-            for (DirectionChecker directionChecker : directionCheckers) {
-                Optional<DirectionChecker.Result> result = directionChecker.next(world);
-                results.add(result);
-            }
-
-            var snowCount = 0;
-            var noneCount = 0;
-
-            for (int i = results.size() - 1; i >= 0; i--) {
-                var result = results.get(i);
+        for (int j = 0; j < config.maxHorizontalDistance; j++) {
+            for (int i = directionCheckers.size() - 1; i >= 0; i--) {
+                var directionChecker = directionCheckers.get(i);
+                Optional<DirectionChecker.Result> result = directionChecker.next(world, config);
 
                 if (result.isEmpty()) continue;
 
                 switch (result.get()) {
                     case NONE -> noneCount++;
                     case SNOW -> snowCount++;
-                    case UNDEFINED -> directionCheckers.remove(i);
                 }
+
+                directionCheckers.remove(i);
             }
 
             if (snowCount != 0 || noneCount != 0) {
-                return snowCount >= noneCount;
+                switch (config.checkerMode) {
+                    case PREFER_SNOW -> {
+                        return snowCount >= noneCount;
+                    }
+                    case PREFER_AIR -> {
+                        return snowCount > noneCount;
+                    }
+                    case ALL_SIDES -> {
+                        if (snowCount == 4) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
 
@@ -125,10 +134,10 @@ public class BetterSnowChecker {
             this.lastPos = pos;
         }
 
-        public Optional<Result> next(ClientWorld world) {
+        public Optional<Result> next(ClientWorld world, Config config) {
             lastPos = lastPos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
 
-            var maxDepth = 2;
+            var maxDepth = config.maxVerticalDistance;
             while (!world.getBlockState(lastPos).isFullCube(world, lastPos)) {
                 if (maxDepth-- < 0) {
                     return Optional.of(Result.UNDEFINED);
