@@ -18,14 +18,14 @@ public class ConfigMenu implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parentScreen -> YetAnotherConfigLib.createBuilder()
-                .title(Text.literal("Better Snow Coverage (requires blockupdate)"))
+                .title(Text.translatable("better-snow-coverage.config.title"))
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Better Snow Coverage"))
+                        .name(Text.translatable("better-snow-coverage.config.category-title"))
                         .tooltip(Text.literal("All the settings"))
                         .option(ListOption.<String>createBuilder()
-                                .name(Text.literal("Excluded Blocks"))
-                                .description(OptionDescription.of(Text.literal(
-                                        "These blocks will not render a snowLayer.")))
+                                .name(Text.translatable("better-snow-coverage.config.excluded-blocks.name"))
+                                .description(OptionDescription.of(Text.translatable(
+                                        "better-snow-coverage.config.excluded-blocks.description")))
                                 .binding(Config.DEFAULT_EXCLUDED_BLOCKS,
                                         () -> Config.HANDLER.instance().excludedBlocks,
                                         newVal -> Config.HANDLER.instance().excludedBlocks = newVal)
@@ -34,9 +34,9 @@ public class ConfigMenu implements ModMenuApi {
                                 .collapsed(true)
                                 .build())
                         .option(ListOption.<String>createBuilder()
-                                .name(Text.literal("Excluded Tags"))
-                                .description(OptionDescription.of(Text.literal(
-                                        "All blocks within these tags will not render a snowLayer.")))
+                                .name(Text.translatable("better-snow-coverage.config.excluded-tags.name"))
+                                .description(OptionDescription.of(Text.translatable(
+                                        "better-snow-coverage.config.excluded-tags.description")))
                                 .binding(Config.DEFAULT_EXCLUDED_TAGS,
                                         () -> Config.HANDLER.instance().excludedTags,
                                         newVal -> Config.HANDLER.instance().excludedTags = newVal)
@@ -45,30 +45,27 @@ public class ConfigMenu implements ModMenuApi {
                                 .collapsed(true)
                                 .build())
                         .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("Max Vertical Distance"))
-                                .description(OptionDescription.of(Text.literal(
-                                        "Max vertical distance to check if snow is present.")))
+                                .name(Text.translatable("better-snow-coverage.config.max-vertical.name"))
+                                .description(OptionDescription.of(Text.translatable(
+                                        "better-snow-coverage.config.max-vertical.description")))
                                 .binding(Config.DEFAULT_MAX_VERTICAL_DISTANCE,
                                         () -> Config.HANDLER.instance().maxVerticalDistance,
                                         newVal -> Config.HANDLER.instance().maxVerticalDistance = newVal)
                                 .controller(opt -> IntegerFieldControllerBuilder.create(opt).min(1))
                                 .build())
                         .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("Max Horizontal Distance"))
-                                .description(OptionDescription.of(Text.literal(
-                                        "Max horizontal distance to check if snow is present.")))
+                                .name(Text.translatable("better-snow-coverage.config.max-horizontal.name"))
+                                .description(OptionDescription.of(Text.translatable(
+                                        "better-snow-coverage.config.max-horizontal.description")))
                                 .binding(Config.DEFAULT_MAX_HORIZONTAL_DISTANCE,
                                         () -> Config.HANDLER.instance().maxHorizontalDistance,
                                         newVal -> Config.HANDLER.instance().maxHorizontalDistance = newVal)
                                 .controller(opt -> IntegerFieldControllerBuilder.create(opt).min(1))
                                 .build())
                         .option(Option.<Config.CheckerMode>createBuilder()
-                                .name(Text.literal("Checker Mode"))
-                                .description(OptionDescription.of(Text.literal(
-                                        """
-                                                Prefer Snow: show snow if equal amount of snow and air is present.
-                                                Prefer Air: show air if equal amount of snow and air is present.
-                                                All Sides: only show Snow if snow is present on all sides.""")))
+                                .name(Text.translatable("better-snow-coverage.config.checker-mode.name"))
+                                .description(OptionDescription.of(Text.translatable(
+                                        "better-snow-coverage.config.checker-mode.description")))
                                 .binding(Config.DEFAULT_CHECKER_MODE,
                                         () -> Config.HANDLER.instance().checkerMode,
                                         newVal -> Config.HANDLER.instance().checkerMode = newVal)

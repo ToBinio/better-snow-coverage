@@ -1,7 +1,19 @@
 {
   "better-snow-coverage.pack.z-fighting.title": "Z-Fighting",
-  "better-snow-coverage.pack.z-fighting.description": "Fixes Snow Z-Fighting",
+  "better-snow-coverage.pack.z-fighting.description": "Fixes snow Z-fighting.",
   "better-snow-coverage.mode.prefer_snow": "Prefer Snow",
   "better-snow-coverage.mode.prefer_air": "Prefer Air",
-  "better-snow-coverage.mode.all_sides": "All Sides"
+  "better-snow-coverage.mode.all_sides": "All Sides",
+  "better-snow-coverage.config.title": "Better Snow Coverage",
+  "better-snow-coverage.config.category-title": "Better Snow Coverage (requires block update)",
+  "better-snow-coverage.config.excluded-blocks.name": "Excluded Blocks",
+  "better-snow-coverage.config.excluded-blocks.description": "These blocks will not render a snow layer.",
+  "better-snow-coverage.config.excluded-tags.name": "Excluded Tags",
+  "better-snow-coverage.config.excluded-tags.description": "All blocks within these tags will not render a snow layer.",
+  "better-snow-coverage.config.max-vertical.name": "Max Vertical Distance",
+  "better-snow-coverage.config.max-vertical.description": "Maximum vertical distance to check if snow is present.",
+  "better-snow-coverage.config.max-horizontal.name": "Max Horizontal Distance",
+  "better-snow-coverage.config.max-horizontal.description": "Maximum horizontal distance to check if snow is present.",
+  "better-snow-coverage.config.checker-mode.name": "Checker Mode",
+  "better-snow-coverage.config.checker-mode.description": "Prefer Snow: Show snow if an equal amount of snow and air is present.\nPrefer Air: Show air if an equal amount of snow and air is present.\nAll Sides: Only show snow if it is present on all sides."
 }
