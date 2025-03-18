@@ -23,7 +23,8 @@ import tobinio.bettersnowcoverage.BetterSnowChecker;
  *
  * @author Tobias Frischmann
  */
-@Mixin (value = ChunkBuilderMeshingTask.class, priority = 990)
+// priority change so this mixins gets applied before Iris
+@Mixin (value = ChunkBuilderMeshingTask.class, priority = 1020)
 public class ChunkBuilderMeshingTaskMixin {
     @Inject (method = "execute(Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lme/jellysquid/mods/sodium/client/util/task/CancellationToken;)Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;renderModel(Lme/jellysquid/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderContext;Lme/jellysquid/mods/sodium/client/render/chunk/compile/ChunkBuildBuffers;)V", remap = false), remap = false)
     private void execute(ChunkBuildContext buildContext, CancellationToken cancellationToken,
