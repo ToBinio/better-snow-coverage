@@ -32,7 +32,7 @@ public class ChunkBuilderMixin {
             @Local (ordinal = 2) BlockPos blockPos, @Local MatrixStack matrixStack, @Local BufferBuilder bufferBuilder,
             @Local Random random, @Local BlockRenderManager blockRenderManager, @Local ChunkRendererRegion chunkRendererRegion) {
 
-        var snowState = BetterSnowChecker.shouldHaveSnow(blockPos.up());
+        var snowState = BetterSnowChecker.shouldHaveSnowAboveBlock(chunkRendererRegion, blockPos);
 
         if (snowState == BetterSnowChecker.SnowState.WITH_LAYER) {
             matrixStack.push();
