@@ -9,6 +9,8 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
 import tobinio.bettersnowcoverage.config.Config;
 
 import java.util.ArrayList;
@@ -32,18 +34,18 @@ public class BetterSnowChecker {
         NONE, WITH_LAYER, WITHOUT_LAYER,
     }
 
-    public static SnowState shouldHaveSnowAboveBlock(ChunkRendererRegion chunkRendererRegion, BlockPos pos) {
-        var state = chunkRendererRegion.getBlockState(pos.up());
+    public static SnowState shouldHaveSnowAboveBlock(BlockView blockView, BlockPos pos) {
+        var state = blockView.getBlockState(pos.up());
 
-        if (state.isSideSolidFullSquare(chunkRendererRegion, pos, Direction.DOWN) || state.isAir() || state.getBlock() == Blocks.WATER) {
+        if (state.isSideSolidFullSquare(blockView, pos, Direction.DOWN) || state.isAir() || state.getBlock() == Blocks.WATER) {
             return SnowState.NONE;
         }
 
-        if (!chunkRendererRegion.getBlockState(pos.down()).isFullCube(chunkRendererRegion, pos.down())) {
+        if (!blockView.getBlockState(pos.down()).isFullCube(blockView, pos.down())) {
             return SnowState.NONE;
         }
 
-        if (hasSnowNeighbor(chunkRendererRegion, pos)) {
+        if (hasSnowNeighbor(blockView, pos)) {
             if (isExcludedBlock(state)) {
                 return SnowState.WITHOUT_LAYER;
             }
@@ -70,7 +72,7 @@ public class BetterSnowChecker {
         return false;
     }
 
-    private static boolean hasSnowNeighbor(ChunkRendererRegion chunkRendererRegion, BlockPos pos) {
+    private static boolean hasSnowNeighbor(BlockView blockView, BlockPos pos) {
         var directionCheckers = new ArrayList<DirectionChecker>();
         directionCheckers.add(new DirectionChecker(Direction.NORTH, pos));
         directionCheckers.add(new DirectionChecker(Direction.EAST, pos));
@@ -83,7 +85,7 @@ public class BetterSnowChecker {
             var results = new ArrayList<Optional<DirectionChecker.Result>>();
 
             for (DirectionChecker directionChecker : directionCheckers) {
-                Optional<DirectionChecker.Result> result = directionChecker.next(chunkRendererRegion);
+                Optional<DirectionChecker.Result> result = directionChecker.next(blockView);
                 results.add(result);
             }
 
@@ -119,11 +121,11 @@ public class BetterSnowChecker {
             this.lastPos = pos;
         }
 
-        public Optional<Result> next(ChunkRendererRegion chunkRendererRegion) {
+        public Optional<Result> next(BlockView blockView) {
             lastPos = lastPos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
 
             var maxDepth = 2;
-            while (!chunkRendererRegion.getBlockState(lastPos).isFullCube(chunkRendererRegion, lastPos)) {
+            while (!blockView.getBlockState(lastPos).isFullCube(blockView, lastPos)) {
                 if (maxDepth-- < 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
@@ -131,7 +133,7 @@ public class BetterSnowChecker {
                 lastPos = lastPos.down();
             }
 
-            while (chunkRendererRegion.getBlockState(lastPos.up()).isFullCube(chunkRendererRegion, lastPos.up())) {
+            while (blockView.getBlockState(lastPos.up()).isFullCube(blockView, lastPos.up())) {
                 if (maxDepth-- < 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
@@ -139,11 +141,11 @@ public class BetterSnowChecker {
                 lastPos = lastPos.up();
             }
 
-            if (chunkRendererRegion.getBlockState(lastPos.up()).isIn(BlockTags.SNOW)) {
+            if (blockView.getBlockState(lastPos.up()).isIn(BlockTags.SNOW)) {
                 return Optional.of(Result.SNOW);
             }
 
-            if (chunkRendererRegion.getBlockState(lastPos.up()).isAir()) {
+            if (blockView.getBlockState(lastPos.up()).isAir()) {
                 return Optional.of(Result.NONE);
             }
 
