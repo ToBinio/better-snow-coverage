@@ -49,8 +49,8 @@ public class ChunkBuilderMixin {
     }
 
     @ModifyVariable (method = "render", at = @At ("STORE"), ordinal = 0)
-    private BlockState setGrassState(BlockState state, @Local (ordinal = 2) BlockPos blockPos) {
-        var snowState = BetterSnowChecker.shouldHaveSnow(blockPos.up());
+    private BlockState setGrassState(BlockState state, @Local (ordinal = 2) BlockPos blockPos,  @Local (ordinal = 0) ChunkRendererRegion chunkRendererRegion) {
+        var snowState = BetterSnowChecker.shouldHaveSnowAboveBlock(chunkRendererRegion, blockPos);
 
         if (snowState != BetterSnowChecker.SnowState.NONE) {
             return BetterSnowChecker.getSnowState(state);
