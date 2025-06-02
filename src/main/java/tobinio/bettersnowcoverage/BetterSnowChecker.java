@@ -1,13 +1,12 @@
 package tobinio.bettersnowcoverage;
 
 import net.minecraft.block.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 import tobinio.bettersnowcoverage.config.Config;
 
 import java.util.ArrayList;
@@ -31,15 +30,8 @@ public class BetterSnowChecker {
         NONE, WITH_LAYER, WITHOUT_LAYER,
     }
 
-    public static SnowState shouldHaveSnow(BlockPos pos) {
-        ClientWorld world = MinecraftClient.getInstance().world;
-
-        if (world == null) {
-            BetterSnowCoverage.LOGGER.warn("no player found");
-            return SnowState.NONE;
-        }
-
-        var state = world.getBlockState(pos);
+    public static SnowState shouldHaveSnowAboveBlock(BlockView world, BlockPos pos) {
+        var state = world.getBlockState(pos.up());
 
         if (state.isSideSolidFullSquare(world,
                 pos,
@@ -51,7 +43,7 @@ public class BetterSnowChecker {
             return SnowState.NONE;
         }
 
-        if (hasSnowNeighbor(pos, world)) {
+        if (hasSnowNeighbor(world, pos)) {
             if (isExcludedBlock(state)) {
                 return SnowState.WITHOUT_LAYER;
             }
@@ -78,7 +70,7 @@ public class BetterSnowChecker {
         return false;
     }
 
-    private static boolean hasSnowNeighbor(BlockPos pos, ClientWorld world) {
+    private static boolean hasSnowNeighbor(BlockView world, BlockPos pos) {
         var directionCheckers = new ArrayList<DirectionChecker>();
         directionCheckers.add(new DirectionChecker(Direction.NORTH, pos.down()));
         directionCheckers.add(new DirectionChecker(Direction.EAST, pos.down()));
@@ -134,7 +126,7 @@ public class BetterSnowChecker {
             this.lastPos = pos;
         }
 
-        public Optional<Result> next(ClientWorld world, Config config) {
+        public Optional<Result> next(BlockView world, Config config) {
             lastPos = lastPos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
 
             var maxDepth = config.maxVerticalDistance;
