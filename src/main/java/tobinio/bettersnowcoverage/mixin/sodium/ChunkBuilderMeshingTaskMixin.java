@@ -30,7 +30,7 @@ public class ChunkBuilderMeshingTaskMixin {
             CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderCache cache, @Local LevelSlice slice,
             @Local (ordinal = 0) BlockPos.Mutable pos, @Local (ordinal = 1) BlockPos.Mutable modelOffset,
             @Local LocalRef<BlockState> blockState) {
-        BetterSnowChecker.SnowState snowState = BetterSnowChecker.shouldHaveSnow(pos.up());
+        BetterSnowChecker.SnowState snowState = BetterSnowChecker.shouldHaveSnowAboveBlock(slice, pos);
 
         if (snowState != BetterSnowChecker.SnowState.NONE) {
             blockState.set(BetterSnowChecker.getSnowState(blockState.get()));

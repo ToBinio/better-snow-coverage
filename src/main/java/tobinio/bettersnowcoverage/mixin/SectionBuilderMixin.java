@@ -39,7 +39,7 @@ public class SectionBuilderMixin {
             BlockBufferAllocatorStorage allocatorStorage, CallbackInfoReturnable<SectionBuilder.RenderData> cir,
             @Local BlockState blockState, @Local (ordinal = 2) BlockPos blockPos) {
 
-        if (blockState.getRenderType() == BlockRenderType.MODEL && BetterSnowChecker.shouldHaveSnow(blockPos.up()) == BetterSnowChecker.SnowState.WITH_LAYER ) {
+        if (blockState.getRenderType() == BlockRenderType.MODEL && BetterSnowChecker.shouldHaveSnowAboveBlock(renderRegion, blockPos.up()) == BetterSnowChecker.SnowState.WITH_LAYER ) {
             var snowBlockPos = blockPos.up();
             var snowBlockState = Blocks.SNOW.getDefaultState();
             BlockStateModel model = blockRenderManager.getModel(snowBlockState);
@@ -49,8 +49,8 @@ public class SectionBuilderMixin {
     }
 
     @ModifyVariable (method = "build", at = @At ("STORE"), ordinal = 0)
-    private BlockState betterSnowCoverage$setGrassState(BlockState state, @Local (ordinal = 2) BlockPos blockPos) {
-        var snowState = BetterSnowChecker.shouldHaveSnow(blockPos.up());
+    private BlockState betterSnowCoverage$setGrassState(BlockState state, @Local (ordinal = 2) BlockPos blockPos, @Local (argsOnly = true) ChunkRendererRegion renderRegion) {
+        var snowState = BetterSnowChecker.shouldHaveSnowAboveBlock(renderRegion, blockPos.up());
 
         if (snowState != BetterSnowChecker.SnowState.NONE) {
             return BetterSnowChecker.getSnowState(state);
