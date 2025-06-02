@@ -30,7 +30,7 @@ public class ChunkBuilderMeshingTaskMixin {
             CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderContext ctx,
             @Local ChunkBuildBuffers buffers, @Local BlockRenderCache cache, @Local WorldSlice slice,
             @Local (ordinal = 1) BlockPos.Mutable modelOffset) {
-        BetterSnowChecker.SnowState snowState = BetterSnowChecker.shouldHaveSnow(ctx.pos().up());
+        BetterSnowChecker.SnowState snowState = BetterSnowChecker.shouldHaveSnowAboveBlock(ctx.world(), ctx.pos());
 
         if (snowState != BetterSnowChecker.SnowState.NONE) {
             var newState = BetterSnowChecker.getSnowState(ctx.state());

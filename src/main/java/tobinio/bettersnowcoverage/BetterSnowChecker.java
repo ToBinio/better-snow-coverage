@@ -2,12 +2,15 @@ package tobinio.bettersnowcoverage;
 
 import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
 import tobinio.bettersnowcoverage.config.Config;
 
 import java.util.ArrayList;
@@ -31,25 +34,18 @@ public class BetterSnowChecker {
         NONE, WITH_LAYER, WITHOUT_LAYER,
     }
 
-    public static SnowState shouldHaveSnow(BlockPos pos) {
-        ClientWorld world = MinecraftClient.getInstance().world;
+    public static SnowState shouldHaveSnowAboveBlock(BlockView blockView, BlockPos pos) {
+        var state = blockView.getBlockState(pos.up());
 
-        if (world == null) {
-            BetterSnowCoverage.LOGGER.warn("no player found");
+        if (state.isSideSolidFullSquare(blockView, pos, Direction.DOWN) || state.isAir() || state.getBlock() == Blocks.WATER) {
             return SnowState.NONE;
         }
 
-        var state = world.getBlockState(pos);
-
-        if (state.isSideSolidFullSquare(world, pos, Direction.DOWN) || state.isAir() || state.getBlock() == Blocks.WATER) {
+        if (!blockView.getBlockState(pos.down()).isFullCube(blockView, pos.down())) {
             return SnowState.NONE;
         }
 
-        if (!world.getBlockState(pos.down()).isFullCube(world, pos.down())) {
-            return SnowState.NONE;
-        }
-
-        if (hasSnowNeighbor(pos, world)) {
+        if (hasSnowNeighbor(blockView, pos)) {
             if (isExcludedBlock(state)) {
                 return SnowState.WITHOUT_LAYER;
             }
@@ -76,7 +72,7 @@ public class BetterSnowChecker {
         return false;
     }
 
-    private static boolean hasSnowNeighbor(BlockPos pos, ClientWorld world) {
+    private static boolean hasSnowNeighbor(BlockView blockView, BlockPos pos) {
         var directionCheckers = new ArrayList<DirectionChecker>();
         directionCheckers.add(new DirectionChecker(Direction.NORTH, pos));
         directionCheckers.add(new DirectionChecker(Direction.EAST, pos));
@@ -89,7 +85,7 @@ public class BetterSnowChecker {
             var results = new ArrayList<Optional<DirectionChecker.Result>>();
 
             for (DirectionChecker directionChecker : directionCheckers) {
-                Optional<DirectionChecker.Result> result = directionChecker.next(world);
+                Optional<DirectionChecker.Result> result = directionChecker.next(blockView);
                 results.add(result);
             }
 
@@ -125,11 +121,11 @@ public class BetterSnowChecker {
             this.lastPos = pos;
         }
 
-        public Optional<Result> next(ClientWorld world) {
+        public Optional<Result> next(BlockView blockView) {
             lastPos = lastPos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
 
             var maxDepth = 2;
-            while (!world.getBlockState(lastPos).isFullCube(world, lastPos)) {
+            while (!blockView.getBlockState(lastPos).isFullCube(blockView, lastPos)) {
                 if (maxDepth-- < 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
@@ -137,7 +133,7 @@ public class BetterSnowChecker {
                 lastPos = lastPos.down();
             }
 
-            while (world.getBlockState(lastPos.up()).isFullCube(world, lastPos.up())) {
+            while (blockView.getBlockState(lastPos.up()).isFullCube(blockView, lastPos.up())) {
                 if (maxDepth-- < 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
@@ -145,11 +141,11 @@ public class BetterSnowChecker {
                 lastPos = lastPos.up();
             }
 
-            if (world.getBlockState(lastPos.up()).isIn(BlockTags.SNOW)) {
+            if (blockView.getBlockState(lastPos.up()).isIn(BlockTags.SNOW)) {
                 return Optional.of(Result.SNOW);
             }
 
-            if (world.getBlockState(lastPos.up()).isAir()) {
+            if (blockView.getBlockState(lastPos.up()).isAir()) {
                 return Optional.of(Result.NONE);
             }
 
