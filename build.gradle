@@ -39,9 +39,12 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
-    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
+    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
     modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
+
+    modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}")
+    modLocalRuntime "maven.modrinth:sodium:${project.sodium_version}"
 }
 
 processResources {
