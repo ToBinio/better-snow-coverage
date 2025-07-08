@@ -35,17 +35,18 @@ public class BetterSnowChecker {
     }
 
     public static SnowState shouldHaveSnowAboveBlock(BlockView blockView, BlockPos pos) {
-        var state = blockView.getBlockState(pos.up());
+        var above = pos.up();
+        var state = blockView.getBlockState(above);
 
-        if (state.isSideSolidFullSquare(blockView, pos, Direction.DOWN) || state.isAir() || state.getBlock() == Blocks.WATER) {
+        if (state.isSideSolidFullSquare(blockView, above, Direction.DOWN) || state.isAir() || state.getBlock() == Blocks.WATER) {
             return SnowState.NONE;
         }
 
-        if (!blockView.getBlockState(pos.down()).isFullCube(blockView, pos.down())) {
+        if (!blockView.getBlockState(pos).isFullCube(blockView, pos)) {
             return SnowState.NONE;
         }
 
-        if (hasSnowNeighbor(blockView, pos)) {
+        if (hasSnowNeighbor(blockView, above)) {
             if (isExcludedBlock(state)) {
                 return SnowState.WITHOUT_LAYER;
             }
