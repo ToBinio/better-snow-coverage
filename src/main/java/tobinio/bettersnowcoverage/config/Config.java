@@ -26,11 +26,8 @@ import static tobinio.bettersnowcoverage.BetterSnowCoverage.id;
  * @author Tobias Frischmann
  */
 public class Config {
-    public static List<String> DEFAULT_EXCLUDED_BLOCKS = List.of("light_weighted_pressure_plate",
-            "heavy_weighted_pressure_plate",
-            "polished_blackstone_pressure_plate",
-            "stone_pressure_plate");
-    public static List<String> DEFAULT_EXCLUDED_TAGS = List.of("buttons", "wooden_pressure_plates", "rails", "leaves");
+    public static List<String> DEFAULT_EXCLUDED_BLOCKS = List.of("wildflowers", "pink_petals", "leaf_litter");
+    public static List<String> DEFAULT_EXCLUDED_TAGS = List.of("buttons", "pressure_plates", "rails", "leaves");
 
     public static List<Block> EXCLUDED_BLOCKS = new ArrayList<>();
     public static List<TagKey<Block>> EXCLUDED_TAGS = new ArrayList<>();
