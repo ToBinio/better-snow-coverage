@@ -73,6 +73,10 @@ public class ConfigMenu implements ModMenuApi {
                                                 .enumClass(Config.CheckerMode.class))
                                         .build())
                                 .build())
+                        .save(() -> {
+                            Config.HANDLER.save();
+                            Config.update();
+                        })
         ).generateScreen(parentScreen);
     }
 }
