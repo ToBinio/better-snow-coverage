@@ -1,0 +1,12 @@
+{
+  "pack": {
+    "description": "Fixes snow Z-fighting",
+    "supported_formats": {
+      "min_inclusive": 15,
+      "max_inclusive": 999
+    },
+    "min_format": 15,
+    "max_format": 999,
+    "pack_format": 15
+  }
+}

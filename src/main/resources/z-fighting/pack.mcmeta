@@ -1,9 +1,0 @@
-{
-  "pack": {
-    "description": {
-      "translate": "better-snow-coverage.pack.z-fighting.description"
-    },
-    "pack_format": 71,
-    "supported_formats": [34,81]
-  }
-}

@@ -1,8 +1,8 @@
 package tobinio.bettersnowcoverage;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.text.Text;
@@ -29,15 +29,14 @@ public class BetterSnowCoverage implements ClientModInitializer {
         registerBuiltinPacks();
     }
 
-    @SuppressWarnings ("UnstableApiUsage")
     public void registerBuiltinPacks() {
         Optional<ModContainer> optionalContainer = FabricLoader.getInstance().getModContainer(MOD_ID);
         assert optionalContainer.isPresent();
         ModContainer container = optionalContainer.get();
-        ResourceManagerHelperImpl.registerBuiltinResourcePack(id("z-fighting"),
-                "z-fighting",
+
+        ResourceLoader.registerBuiltinPack(id("z-fighting"),
                 container,
                 Text.translatable(MOD_ID + "pack.z-fighting.title"),
-                ResourcePackActivationType.DEFAULT_ENABLED);
+                PackActivationType.NORMAL);
     }
 }
