@@ -1,5 +1,6 @@
 ![logo.png](assets/logo.png)
 
+![Requires_Sodium_cosy.svg](assets/Requires_Sodium_cosy.svg)
 ![forge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/unsupported/forge_vector.svg)
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/project/better-snow-coverage)
 
