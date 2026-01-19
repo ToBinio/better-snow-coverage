@@ -45,7 +45,8 @@ public class BetterSnowChecker {
         }
 
         if (hasSnowNeighbor(world, above)) {
-            if (isExcludedBlock(state)) {
+            Config config = Config.HANDLER.instance();
+            if (isInBlockList(state) == (config.listMode == Config.ListMode.BLACK_LIST)) {
                 return SnowState.WITHOUT_LAYER;
             }
 
@@ -55,14 +56,14 @@ public class BetterSnowChecker {
         return SnowState.NONE;
     }
 
-    private static boolean isExcludedBlock(BlockState state) {
-        for (TagKey<Block> tag : Config.EXCLUDED_TAGS) {
+    private static boolean isInBlockList(BlockState state) {
+        for (TagKey<Block> tag : Config.TAGS_LIST) {
             if (state.isIn(tag)) {
                 return true;
             }
         }
 
-        for (Block block : Config.EXCLUDED_BLOCKS) {
+        for (Block block : Config.BLOCKS_LIST) {
             if (state.getBlock().equals(block)) {
                 return true;
             }

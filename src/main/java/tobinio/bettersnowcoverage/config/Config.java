@@ -26,15 +26,15 @@ import static tobinio.bettersnowcoverage.BetterSnowCoverage.id;
  * @author Tobias Frischmann
  */
 public class Config {
-    public static List<String> DEFAULT_EXCLUDED_BLOCKS = List.of("wildflowers", "pink_petals", "leaf_litter");
-    public static List<String> DEFAULT_EXCLUDED_TAGS = List.of("buttons", "pressure_plates", "rails", "leaves");
+    public static List<String> DEFAULT_BLOCKS_LIST = List.of("wildflowers", "pink_petals", "leaf_litter");
+    public static List<String> DEFAULT_TAGS_LIST = List.of("buttons", "pressure_plates", "rails", "leaves");
 
-    public static List<Block> EXCLUDED_BLOCKS = new ArrayList<>();
-    public static List<TagKey<Block>> EXCLUDED_TAGS = new ArrayList<>();
+    public static List<Block> BLOCKS_LIST = new ArrayList<>();
+    public static List<TagKey<Block>> TAGS_LIST = new ArrayList<>();
 
     public static void update() {
-        setBlocks(HANDLER.instance().excludedBlocks, EXCLUDED_BLOCKS);
-        setTags(HANDLER.instance().excludedTags, EXCLUDED_TAGS);
+        setBlocks(HANDLER.instance().blocksList, BLOCKS_LIST);
+        setTags(HANDLER.instance().tagsList, TAGS_LIST);
     }
 
     private static void setTags(List<String> strings, List<TagKey<Block>> tags) {
@@ -84,10 +84,23 @@ public class Config {
             .build();
 
     @SerialEntry
-    public List<String> excludedBlocks = new ArrayList<>(DEFAULT_EXCLUDED_BLOCKS);
+    public List<String> blocksList = new ArrayList<>(DEFAULT_BLOCKS_LIST);
 
     @SerialEntry
-    public List<String> excludedTags = new ArrayList<>(DEFAULT_EXCLUDED_TAGS);
+    public List<String> tagsList = new ArrayList<>(DEFAULT_TAGS_LIST);
+
+    @SerialEntry
+    public ListMode listMode = ListMode.BLACK_LIST;
+
+    public enum ListMode implements NameableEnum {
+        BLACK_LIST,
+        WHITE_LIST;
+
+        @Override
+        public Text getDisplayName() {
+            return Text.translatable("%s.list_mode.%s".formatted(MOD_ID, name().toLowerCase()));
+        }
+    }
 
     @SerialEntry
     public Integer maxVerticalDistance = 2;

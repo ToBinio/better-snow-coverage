@@ -20,30 +20,7 @@ public class ConfigMenu implements ModMenuApi {
         return parentScreen -> YetAnotherConfigLib.create(Config.HANDLER,
                 (defaults, config, builder) -> builder.title(Text.translatable("better-snow-coverage.config.title"))
                         .category(ConfigCategory.createBuilder()
-                                .name(Text.translatable("better-snow-coverage.config.category-title"))
-                                .tooltip(Text.literal("All the settings"))
-                                .option(ListOption.<String>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.excluded-blocks.name"))
-                                        .description(OptionDescription.of(Text.translatable(
-                                                "better-snow-coverage.config.excluded-blocks.description")))
-                                        .binding(defaults.excludedBlocks,
-                                                () -> config.excludedBlocks,
-                                                newVal -> config.excludedBlocks = newVal)
-                                        .controller(StringControllerBuilder::create)
-                                        .initial("")
-                                        .collapsed(true)
-                                        .build())
-                                .option(ListOption.<String>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.excluded-tags.name"))
-                                        .description(OptionDescription.of(Text.translatable(
-                                                "better-snow-coverage.config.excluded-tags.description")))
-                                        .binding(defaults.excludedTags,
-                                                () -> config.excludedTags,
-                                                newVal -> config.excludedTags = newVal)
-                                        .controller(StringControllerBuilder::create)
-                                        .initial("")
-                                        .collapsed(true)
-                                        .build())
+                                .name(Text.translatable("better-snow-coverage.config.general-category-title"))
                                 .option(Option.<Integer>createBuilder()
                                         .name(Text.translatable("better-snow-coverage.config.max-vertical.name"))
                                         .description(OptionDescription.of(Text.translatable(
@@ -71,6 +48,41 @@ public class ConfigMenu implements ModMenuApi {
                                                 newVal -> config.checkerMode = newVal)
                                         .controller(opt -> EnumControllerBuilder.create(opt)
                                                 .enumClass(Config.CheckerMode.class))
+                                        .build())
+                                .build())
+                        .category(ConfigCategory.createBuilder()
+                                .name(Text.translatable("better-snow-coverage.config.filter-category-title"))
+                                .option(Option.<Config.ListMode>createBuilder()
+                                        .name(Text.translatable("better-snow-coverage.config.filter-mode.name"))
+                                        .description(OptionDescription.of(Text.translatable(
+                                                "better-snow-coverage.config.filter-mode.description")))
+                                        .binding(defaults.listMode,
+                                                () -> config.listMode,
+                                                newVal -> config.listMode = newVal)
+                                        .controller(opt -> EnumControllerBuilder.create(opt)
+                                                .enumClass(Config.ListMode.class))
+                                        .build())
+                                .option(ListOption.<String>createBuilder()
+                                        .name(Text.translatable("better-snow-coverage.config.excluded-blocks.name"))
+                                        .description(OptionDescription.of(Text.translatable(
+                                                "better-snow-coverage.config.excluded-blocks.description")))
+                                        .binding(defaults.blocksList,
+                                                () -> config.blocksList,
+                                                newVal -> config.blocksList = newVal)
+                                        .controller(StringControllerBuilder::create)
+                                        .initial("")
+                                        .collapsed(true)
+                                        .build())
+                                .option(ListOption.<String>createBuilder()
+                                        .name(Text.translatable("better-snow-coverage.config.excluded-tags.name"))
+                                        .description(OptionDescription.of(Text.translatable(
+                                                "better-snow-coverage.config.excluded-tags.description")))
+                                        .binding(defaults.tagsList,
+                                                () -> config.tagsList,
+                                                newVal -> config.tagsList = newVal)
+                                        .controller(StringControllerBuilder::create)
+                                        .initial("")
+                                        .collapsed(true)
                                         .build())
                                 .build())
                         .save(() -> {
