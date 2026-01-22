@@ -43,6 +43,8 @@ dependencies {
 
     modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
     modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}")
+
+    modCompileOnly("maven.modrinth:iris:1.10.4+1.21.11-fabric")
 }
 
 processResources {

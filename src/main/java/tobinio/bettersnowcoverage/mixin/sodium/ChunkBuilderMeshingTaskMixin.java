@@ -8,6 +8,8 @@ import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRend
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
 import net.caffeinemc.mods.sodium.client.util.task.CancellationToken;
 import net.caffeinemc.mods.sodium.client.world.LevelSlice;
+import net.fabricmc.loader.api.FabricLoader;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tobinio.bettersnowcoverage.BetterSnowChecker;
+import tobinio.bettersnowcoverage.compat.Iris;
 
 /**
  * Created: 31.07.24
@@ -38,9 +41,16 @@ public class ChunkBuilderMeshingTaskMixin {
 
         if (snowState == BetterSnowChecker.SnowState.WITH_LAYER) {
             BlockState snow = Blocks.SNOW.getDefaultState();
-            var model = cache.getBlockModels().getModel(snow);
 
-            cache.getBlockRenderer().renderModel(model, snow, pos.up(), modelOffset.up());
+            var blockRenderer = cache.getBlockRenderer();
+            var blockPos = pos.up();
+
+            if (FabricLoader.getInstance().isModLoaded("iris")) {
+                Iris.setBlockData(blockRenderer, snow, blockPos);
+            }
+
+            var model = cache.getBlockModels().getModel(snow);
+            blockRenderer.renderModel(model, snow, blockPos, modelOffset.up());
         }
     }
 }
