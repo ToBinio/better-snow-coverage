@@ -30,7 +30,7 @@ import tobinio.bettersnowcoverage.compat.Iris;
 // priority change so this mixins gets applied before Iris
 @Mixin (value = ChunkBuilderMeshingTask.class, priority = 1020)
 public class ChunkBuilderMeshingTaskMixin {
-    @Inject (method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lnet/caffeinemc/mods/sodium/client/util/task/CancellationToken;)Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;renderModel(Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)V"))
+    @Inject (method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lnet/caffeinemc/mods/sodium/client/util/task/CancellationToken;)Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderCache;getBlockModels()Lnet/minecraft/client/renderer/block/BlockStateModelSet;"))
     private void betterSnowCoverage$execute(ChunkBuildContext buildContext, CancellationToken cancellationToken,
             CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderCache cache, @Local LevelSlice slice,
             @Local (ordinal = 0) BlockPos.MutableBlockPos pos, @Local (ordinal = 1) BlockPos.MutableBlockPos modelOffset,
