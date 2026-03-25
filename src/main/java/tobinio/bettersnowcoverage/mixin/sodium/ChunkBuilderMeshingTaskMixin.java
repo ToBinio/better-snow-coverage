@@ -10,6 +10,8 @@ import net.caffeinemc.mods.sodium.client.util.task.CancellationToken;
 import net.caffeinemc.mods.sodium.client.world.LevelSlice;
 import net.fabricmc.loader.api.FabricLoader;
 
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.world.level.block.SnowyBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos;
@@ -28,7 +30,7 @@ import tobinio.bettersnowcoverage.compat.Iris;
 // priority change so this mixins gets applied before Iris
 @Mixin (value = ChunkBuilderMeshingTask.class, priority = 1020)
 public class ChunkBuilderMeshingTaskMixin {
-    @Inject (method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lnet/caffeinemc/mods/sodium/client/util/task/CancellationToken;)Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderCache;getBlockModels()Lnet/minecraft/client/renderer/block/BlockModelShaper;"))
+    @Inject (method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lnet/caffeinemc/mods/sodium/client/util/task/CancellationToken;)Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;", at = @At (value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;renderModel(Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)V"))
     private void betterSnowCoverage$execute(ChunkBuildContext buildContext, CancellationToken cancellationToken,
             CallbackInfoReturnable<ChunkBuildOutput> cir, @Local BlockRenderCache cache, @Local LevelSlice slice,
             @Local (ordinal = 0) BlockPos.MutableBlockPos pos, @Local (ordinal = 1) BlockPos.MutableBlockPos modelOffset,
@@ -49,7 +51,7 @@ public class ChunkBuilderMeshingTaskMixin {
                 Iris.setBlockData(blockRenderer, snow, blockPos);
             }
 
-            var model = cache.getBlockModels().getBlockModel(snow);
+            var model = cache.getBlockModels().get(snow);
             blockRenderer.renderModel(model, snow, blockPos, modelOffset.above());
         }
     }

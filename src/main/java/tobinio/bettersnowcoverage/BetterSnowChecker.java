@@ -4,7 +4,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SnowyDirtBlock;
+import net.minecraft.world.level.block.SnowyBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.BlockPos;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class BetterSnowChecker {
 
     public static BlockState getSnowState(BlockState state) {
-        if (state.getBlock() instanceof SnowyDirtBlock) {
+        if (state.getBlock() instanceof SnowyBlock) {
             return state.setValue(BlockStateProperties.SNOWY, true);
         }
         return state;
