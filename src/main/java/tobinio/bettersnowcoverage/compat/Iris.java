@@ -4,8 +4,8 @@ import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRend
 import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
 import net.irisshaders.iris.vertices.sodium.terrain.VertexEncoderInterface;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 
 /**
  * Created: 22.01.26
@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 public class Iris {
     public static void setBlockData(BlockRenderer blockRenderer, BlockState blockState, BlockPos blockPos) {
         if (WorldRenderingSettings.INSTANCE.getBlockStateIds() != null) {
-            ((VertexEncoderInterface) blockRenderer).beginBlock(WorldRenderingSettings.INSTANCE.getBlockStateIds().getOrDefault(blockState, -1), (byte) 0, (byte) blockState.getLuminance(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            ((VertexEncoderInterface) blockRenderer).beginBlock(WorldRenderingSettings.INSTANCE.getBlockStateIds().getOrDefault(blockState, -1), (byte) 0, (byte) blockState.getLightEmission(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
         }
     }
 }

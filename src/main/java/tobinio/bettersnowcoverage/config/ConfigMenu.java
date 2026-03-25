@@ -6,7 +6,7 @@ import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 /**
  * Created: 02.08.24
@@ -18,12 +18,12 @@ public class ConfigMenu implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parentScreen -> YetAnotherConfigLib.create(Config.HANDLER,
-                (defaults, config, builder) -> builder.title(Text.translatable("better-snow-coverage.config.title"))
+                (defaults, config, builder) -> builder.title(Component.translatable("better-snow-coverage.config.title"))
                         .category(ConfigCategory.createBuilder()
-                                .name(Text.translatable("better-snow-coverage.config.general-category-title"))
+                                .name(Component.translatable("better-snow-coverage.config.general-category-title"))
                                 .option(Option.<Integer>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.max-vertical.name"))
-                                        .description(OptionDescription.of(Text.translatable(
+                                        .name(Component.translatable("better-snow-coverage.config.max-vertical.name"))
+                                        .description(OptionDescription.of(Component.translatable(
                                                 "better-snow-coverage.config.max-vertical.description")))
                                         .binding(defaults.maxVerticalDistance,
                                                 () -> config.maxVerticalDistance,
@@ -31,8 +31,8 @@ public class ConfigMenu implements ModMenuApi {
                                         .controller(opt -> IntegerFieldControllerBuilder.create(opt).min(1))
                                         .build())
                                 .option(Option.<Integer>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.max-horizontal.name"))
-                                        .description(OptionDescription.of(Text.translatable(
+                                        .name(Component.translatable("better-snow-coverage.config.max-horizontal.name"))
+                                        .description(OptionDescription.of(Component.translatable(
                                                 "better-snow-coverage.config.max-horizontal.description")))
                                         .binding(defaults.maxHorizontalDistance,
                                                 () -> config.maxHorizontalDistance,
@@ -40,8 +40,8 @@ public class ConfigMenu implements ModMenuApi {
                                         .controller(opt -> IntegerFieldControllerBuilder.create(opt).min(1))
                                         .build())
                                 .option(Option.<Config.CheckerMode>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.checker-mode.name"))
-                                        .description(OptionDescription.of(Text.translatable(
+                                        .name(Component.translatable("better-snow-coverage.config.checker-mode.name"))
+                                        .description(OptionDescription.of(Component.translatable(
                                                 "better-snow-coverage.config.checker-mode.description")))
                                         .binding(defaults.checkerMode,
                                                 () -> config.checkerMode,
@@ -51,10 +51,10 @@ public class ConfigMenu implements ModMenuApi {
                                         .build())
                                 .build())
                         .category(ConfigCategory.createBuilder()
-                                .name(Text.translatable("better-snow-coverage.config.filter-category-title"))
+                                .name(Component.translatable("better-snow-coverage.config.filter-category-title"))
                                 .option(Option.<Config.ListMode>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.filter-mode.name"))
-                                        .description(OptionDescription.of(Text.translatable(
+                                        .name(Component.translatable("better-snow-coverage.config.filter-mode.name"))
+                                        .description(OptionDescription.of(Component.translatable(
                                                 "better-snow-coverage.config.filter-mode.description")))
                                         .binding(defaults.listMode,
                                                 () -> config.listMode,
@@ -63,8 +63,8 @@ public class ConfigMenu implements ModMenuApi {
                                                 .enumClass(Config.ListMode.class))
                                         .build())
                                 .option(ListOption.<String>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.excluded-blocks.name"))
-                                        .description(OptionDescription.of(Text.translatable(
+                                        .name(Component.translatable("better-snow-coverage.config.excluded-blocks.name"))
+                                        .description(OptionDescription.of(Component.translatable(
                                                 "better-snow-coverage.config.excluded-blocks.description")))
                                         .binding(defaults.blocksList,
                                                 () -> config.blocksList,
@@ -74,8 +74,8 @@ public class ConfigMenu implements ModMenuApi {
                                         .collapsed(true)
                                         .build())
                                 .option(ListOption.<String>createBuilder()
-                                        .name(Text.translatable("better-snow-coverage.config.excluded-tags.name"))
-                                        .description(OptionDescription.of(Text.translatable(
+                                        .name(Component.translatable("better-snow-coverage.config.excluded-tags.name"))
+                                        .description(OptionDescription.of(Component.translatable(
                                                 "better-snow-coverage.config.excluded-tags.description")))
                                         .binding(defaults.tagsList,
                                                 () -> config.tagsList,

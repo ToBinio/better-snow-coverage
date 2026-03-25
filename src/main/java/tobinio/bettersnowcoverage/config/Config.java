@@ -6,12 +6,12 @@ import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class Config {
                 continue;
             }
 
-            var tagKey = TagKey.of(RegistryKeys.BLOCK, identifier);
+            var tagKey = TagKey.create(Registries.BLOCK, identifier);
             tags.add(tagKey);
         }
     }
@@ -64,7 +64,7 @@ public class Config {
                 continue;
             }
 
-            var block = Registries.BLOCK.getOptionalValue(identifier);
+            var block = BuiltInRegistries.BLOCK.getOptional(identifier);
 
             if (block.isPresent()) {
                 blocks.add(block.get());
@@ -97,8 +97,8 @@ public class Config {
         WHITE_LIST;
 
         @Override
-        public Text getDisplayName() {
-            return Text.translatable("%s.list_mode.%s".formatted(MOD_ID, name().toLowerCase()));
+        public Component getDisplayName() {
+            return Component.translatable("%s.list_mode.%s".formatted(MOD_ID, name().toLowerCase()));
         }
     }
 
@@ -117,8 +117,8 @@ public class Config {
         ALL_SIDES;
 
         @Override
-        public Text getDisplayName() {
-            return Text.translatable("%s.mode.%s".formatted(MOD_ID, name().toLowerCase()));
+        public Component getDisplayName() {
+            return Component.translatable("%s.mode.%s".formatted(MOD_ID, name().toLowerCase()));
         }
     }
 }

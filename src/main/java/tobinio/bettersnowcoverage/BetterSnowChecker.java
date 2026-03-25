@@ -1,12 +1,15 @@
 package tobinio.bettersnowcoverage;
 
-import net.minecraft.block.*;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowyDirtBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import tobinio.bettersnowcoverage.config.Config;
 
 import java.util.ArrayList;
@@ -20,8 +23,8 @@ import java.util.Optional;
 public class BetterSnowChecker {
 
     public static BlockState getSnowState(BlockState state) {
-        if (state.getBlock() instanceof SnowyBlock) {
-            return state.with(Properties.SNOWY, true);
+        if (state.getBlock() instanceof SnowyDirtBlock) {
+            return state.setValue(BlockStateProperties.SNOWY, true);
         }
         return state;
     }
@@ -30,17 +33,17 @@ public class BetterSnowChecker {
         NONE, WITH_LAYER, WITHOUT_LAYER,
     }
 
-    public static SnowState shouldHaveSnowAboveBlock(BlockView world, BlockPos pos) {
-        var above = pos.up();
+    public static SnowState shouldHaveSnowAboveBlock(BlockGetter world, BlockPos pos) {
+        var above = pos.above();
         var state = world.getBlockState(above);
 
-        if (state.isSideSolidFullSquare(world,
+        if (state.isFaceSturdy(world,
                 above,
-                Direction.DOWN) || state.isIn(BlockTags.AIR) || state.getBlock() == Blocks.WATER) {
+                Direction.DOWN) || state.is(BlockTags.AIR) || state.getBlock() == Blocks.WATER) {
             return SnowState.NONE;
         }
 
-        if (!world.getBlockState(pos).isFullCube(world, pos)) {
+        if (!world.getBlockState(pos).isCollisionShapeFullBlock(world, pos)) {
             return SnowState.NONE;
         }
 
@@ -58,7 +61,7 @@ public class BetterSnowChecker {
 
     private static boolean isInBlockList(BlockState state) {
         for (TagKey<Block> tag : Config.TAGS_LIST) {
-            if (state.isIn(tag)) {
+            if (state.is(tag)) {
                 return true;
             }
         }
@@ -72,12 +75,12 @@ public class BetterSnowChecker {
         return false;
     }
 
-    private static boolean hasSnowNeighbor(BlockView world, BlockPos pos) {
+    private static boolean hasSnowNeighbor(BlockGetter world, BlockPos pos) {
         var directionCheckers = new ArrayList<DirectionChecker>();
-        directionCheckers.add(new DirectionChecker(Direction.NORTH, pos.down()));
-        directionCheckers.add(new DirectionChecker(Direction.EAST, pos.down()));
-        directionCheckers.add(new DirectionChecker(Direction.SOUTH, pos.down()));
-        directionCheckers.add(new DirectionChecker(Direction.WEST, pos.down()));
+        directionCheckers.add(new DirectionChecker(Direction.NORTH, pos.below()));
+        directionCheckers.add(new DirectionChecker(Direction.EAST, pos.below()));
+        directionCheckers.add(new DirectionChecker(Direction.SOUTH, pos.below()));
+        directionCheckers.add(new DirectionChecker(Direction.WEST, pos.below()));
 
         Config config = Config.HANDLER.instance();
 
@@ -128,31 +131,31 @@ public class BetterSnowChecker {
             this.lastPos = pos;
         }
 
-        public Optional<Result> next(BlockView world, Config config) {
-            lastPos = lastPos.add(direction.getOffsetX(), 0, direction.getOffsetZ());
+        public Optional<Result> next(BlockGetter world, Config config) {
+            lastPos = lastPos.offset(direction.getStepX(), 0, direction.getStepZ());
 
             var maxDepth = config.maxVerticalDistance;
-            while (!world.getBlockState(lastPos).isFullCube(world, lastPos)) {
+            while (!world.getBlockState(lastPos).isCollisionShapeFullBlock(world, lastPos)) {
                 if (maxDepth-- <= 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
 
-                lastPos = lastPos.down();
+                lastPos = lastPos.below();
             }
 
-            while (world.getBlockState(lastPos.up()).isFullCube(world, lastPos.up())) {
+            while (world.getBlockState(lastPos.above()).isCollisionShapeFullBlock(world, lastPos.above())) {
                 if (maxDepth-- <= 0) {
                     return Optional.of(Result.UNDEFINED);
                 }
 
-                lastPos = lastPos.up();
+                lastPos = lastPos.above();
             }
 
-            if (world.getBlockState(lastPos.up()).isIn(BlockTags.SNOW)) {
+            if (world.getBlockState(lastPos.above()).is(BlockTags.SNOW)) {
                 return Optional.of(Result.SNOW);
             }
 
-            if (world.getBlockState(lastPos.up()).isIn(BlockTags.AIR)) {
+            if (world.getBlockState(lastPos.above()).is(BlockTags.AIR)) {
                 return Optional.of(Result.NONE);
             }
 
